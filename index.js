@@ -9,8 +9,9 @@ class Circle {
     this.centre = [x, y];
   }
   // 2D implicit function. Not to be accessed publicly
-  distance(x, y) {
-    return Math.sqrt((this.centre[0] - x) ** 2 + (this.centre[1] - y) ** 2);
+  fieldForce(x, y) {
+    const r = Math.sqrt((this.centre[0] - x) ** 2 + (this.centre[1] - y) ** 2);
+    return r > 0 ? 1 / r : 1;
   }
 }
 
@@ -20,7 +21,6 @@ function setup() {
 }
 
 function draw() {
-  background(200);
   strokeWeight(3);
 
   const rows = Math.floor(WIDTH / STEP) + 1;
@@ -28,10 +28,14 @@ function draw() {
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
+      const MAX_STROKE = 15;
       const circle = new Circle(150, 150);
-      const pointColor =
-        circle.distance(i * STEP, j * STEP) < 100 ? "purple" : "white";
-      stroke(pointColor);
+      const fieldForce = circle.fieldForce(i * STEP, j * STEP);
+      const pointStrokeWeight = fieldForce * 1000;
+      strokeWeight(
+        pointStrokeWeight > MAX_STROKE ? MAX_STROKE : pointStrokeWeight
+      );
+      stroke("purple");
       point(i * STEP, j * STEP);
     }
   }
