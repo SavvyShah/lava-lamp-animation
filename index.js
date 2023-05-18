@@ -1,6 +1,6 @@
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-const STEP = 20;
+const STEP = 10;
 
 const gridPoints = [];
 
@@ -18,9 +18,7 @@ class Circle {
 // Add grid points from 0 to screen width and 0 to screen height
 function setup() {
   createCanvas(WIDTH, HEIGHT);
-}
 
-function draw() {
   strokeWeight(3);
 
   const rows = Math.floor(WIDTH / STEP) + 1;
@@ -28,15 +26,18 @@ function draw() {
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      const MAX_STROKE = 15;
-      const circle = new Circle(150, 150);
-      const fieldForce = circle.fieldForce(i * STEP, j * STEP);
-      const pointStrokeWeight = fieldForce * 1000;
-      strokeWeight(
-        pointStrokeWeight > MAX_STROKE ? MAX_STROKE : pointStrokeWeight
-      );
-      stroke("purple");
+      const circle1 = new Circle(300, 300);
+      const circle2 = new Circle(500, 300);
+      const fieldForce1 = circle1.fieldForce(i * STEP, j * STEP);
+      const fieldForce2 = circle2.fieldForce(i * STEP, j * STEP);
+      const fieldForce = fieldForce1 + fieldForce2;
+
+      const pointOpacity = fieldForce * 100 > 1 ? fieldForce ** 2 * 10 ** 6 : 0;
+      strokeWeight(10);
+      stroke(0, 100, 200, pointOpacity);
       point(i * STEP, j * STEP);
     }
   }
 }
+
+function draw() {}
