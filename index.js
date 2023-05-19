@@ -3,9 +3,10 @@ const HEIGHT = window.innerHeight;
 const STEP = 10;
 
 class Circle {
-  constructor(x, y, v) {
+  constructor(x, y, v, s = 4) {
     this.centre = [x, y];
     this.velocity = v;
+    this.size = s;
   }
 
   // Outputs field values in range of [0, MAX_VALUE]
@@ -13,7 +14,7 @@ class Circle {
   // You can then easily cutoff values less than 0.01. i.e. THRESHOLD = 0.01
   fieldPotential(x, y) {
     // Number of pixels in a unit
-    const UNIT = Math.max(WIDTH, HEIGHT) / 20;
+    const UNIT = (this.size * Math.max(WIDTH, HEIGHT)) / 20;
     // MAX field value when on the charge itself. i.e. the center
     const MAX_VALUE = 10 ** 5;
 
@@ -50,8 +51,8 @@ function totalPotential(x, y, circles) {
   );
 }
 
-const circle1 = new Circle(300, 300, [-1, 0]);
-const circle2 = new Circle(600, 300, [1, 0]);
+const circle1 = new Circle(300, 300, [Math.random() * 5, Math.random() * 5], 3);
+const circle2 = new Circle(600, 300, [Math.random() * 5, Math.random() * 5], 5);
 
 // Add grid points from 0 to screen width and 0 to screen height
 function setup() {
