@@ -18,8 +18,10 @@ class Circle {
 // Add grid points from 0 to screen width and 0 to screen height
 function setup() {
   createCanvas(WIDTH, HEIGHT);
+}
 
-  strokeWeight(3);
+function draw() {
+  clear();
 
   const rows = Math.floor(WIDTH / STEP) + 1;
   const cols = Math.floor(HEIGHT / STEP) + 1;
@@ -27,17 +29,15 @@ function setup() {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const circle1 = new Circle(300, 300);
-      const circle2 = new Circle(500, 300);
+      const circle2 = new Circle(700, 300);
       const fieldForce1 = circle1.fieldForce(i * STEP, j * STEP);
       const fieldForce2 = circle2.fieldForce(i * STEP, j * STEP);
       const fieldForce = fieldForce1 + fieldForce2;
 
       const pointOpacity = fieldForce * 100 > 1 ? fieldForce ** 2 * 10 ** 6 : 0;
       strokeWeight(10);
-      stroke(0, 100, 200, pointOpacity);
+      stroke(Math.random(), 100, 200, pointOpacity);
       point(i * STEP, j * STEP);
     }
   }
 }
-
-function draw() {}
