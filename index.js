@@ -22,10 +22,17 @@ class Circle {
     return rSquare > 0 ? 1 / rSquare ** 2 : MAX_VALUE;
   }
   move() {
-    this.centre = [
-      this.centre[0] - this.velocity[0],
-      this.centre[1] - this.velocity[1],
-    ];
+    if (this.centre[0] < 0 || this.centre[0] >= WIDTH) {
+      // Horizontal velocity becomes opposite
+      this.velocity[0] = -this.velocity[0];
+    }
+    this.centre[0] = this.centre[0] - this.velocity[0];
+
+    if (this.centre[1] < 0 || this.centre[1] >= HEIGHT) {
+      // Vertical velocity becomes opposite
+      this.velocity[1] = -this.velocity[1];
+    }
+    this.centre[1] = this.centre[1] - this.velocity[1];
   }
 }
 
