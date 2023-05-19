@@ -51,8 +51,11 @@ function totalPotential(x, y, circles) {
   );
 }
 
-const circle1 = new Circle(300, 300, [Math.random() * 5, Math.random() * 5], 3);
-const circle2 = new Circle(600, 300, [Math.random() * 5, Math.random() * 5], 5);
+const circles = [
+  new Circle(300, 300, [Math.random() * 2, Math.random() * 2], 3),
+  new Circle(300, 300, [Math.random() * 2, Math.random() * 2], 5),
+  new Circle(300, 300, [Math.random() * 2, Math.random() * 2], 5),
+];
 
 // Add grid points from 0 to screen width and 0 to screen height
 function setup() {
@@ -61,18 +64,14 @@ function setup() {
 
 function draw() {
   clear();
-  circle1.move();
-  circle2.move();
+  circles.forEach((circle) => circle.move());
 
   const rows = Math.floor(WIDTH / STEP) + 1;
   const cols = Math.floor(HEIGHT / STEP) + 1;
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      const fieldPotential = totalPotential(i * STEP, j * STEP, [
-        circle1,
-        circle2,
-      ]);
+      const fieldPotential = totalPotential(i * STEP, j * STEP, circles);
 
       const pointOpacity = fieldPotential * 8;
       strokeWeight(10);
