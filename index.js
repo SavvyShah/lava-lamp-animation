@@ -3,8 +3,9 @@ const HEIGHT = window.innerHeight;
 const STEP = 10;
 
 class Circle {
-  constructor(x, y) {
+  constructor(x, y, v) {
     this.centre = [x, y];
+    this.velocity = v;
   }
 
   // Outputs field values in range of [0, MAX_VALUE]
@@ -19,6 +20,12 @@ class Circle {
     const rSquare =
       ((this.centre[0] - x) ** 2 + (this.centre[1] - y) ** 2) / UNIT ** 2;
     return rSquare > 0 ? 1 / rSquare ** 2 : MAX_VALUE;
+  }
+  move() {
+    this.centre = [
+      this.centre[0] - this.velocity[0],
+      this.centre[1] - this.velocity[1],
+    ];
   }
 }
 
@@ -36,6 +43,9 @@ function totalPotential(x, y, circles) {
   );
 }
 
+const circle1 = new Circle(300, 300, [-1, 0]);
+const circle2 = new Circle(600, 300, [1, 0]);
+
 // Add grid points from 0 to screen width and 0 to screen height
 function setup() {
   createCanvas(WIDTH, HEIGHT);
@@ -43,14 +53,14 @@ function setup() {
 
 function draw() {
   clear();
+  circle1.move();
+  circle2.move();
 
   const rows = Math.floor(WIDTH / STEP) + 1;
   const cols = Math.floor(HEIGHT / STEP) + 1;
 
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
-      const circle1 = new Circle(300, 300);
-      const circle2 = new Circle(350, 300);
       const fieldPotential = totalPotential(i * STEP, j * STEP, [
         circle1,
         circle2,
