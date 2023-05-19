@@ -6,10 +6,19 @@ class Circle {
   constructor(x, y) {
     this.centre = [x, y];
   }
-  // 2D implicit function. Not to be accessed publicly
+
+  // Outputs field values in range of [0, MAX_VALUE]
+  // MAX_VALUE is as defined inside function.
+  // You can then easily cutoff values less than 0.01. i.e. THRESHOLD = 0.01
   fieldPotential(x, y) {
-    const r = Math.sqrt((this.centre[0] - x) ** 2 + (this.centre[1] - y) ** 2);
-    return r > 0 ? 1 / r : 1;
+    // Number of pixels in a unit
+    const UNIT = Math.max(WIDTH, HEIGHT) / 20;
+    // MAX field value when on the charge itself. i.e. the center
+    const MAX_VALUE = 10 ** 5;
+
+    const rSquare =
+      ((this.centre[0] - x) ** 2 + (this.centre[1] - y) ** 2) / UNIT ** 2;
+    return rSquare > 0 ? 1 / rSquare ** 2 : MAX_VALUE;
   }
 }
 
@@ -41,14 +50,13 @@ function draw() {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       const circle1 = new Circle(300, 300);
-      const circle2 = new Circle(700, 300);
+      const circle2 = new Circle(350, 300);
       const fieldPotential = totalPotential(i * STEP, j * STEP, [
         circle1,
         circle2,
       ]);
 
-      const pointOpacity =
-        fieldPotential * 100 > 1 ? fieldPotential ** 2 * 10 ** 6 : 0;
+      const pointOpacity = fieldPotential * 8;
       strokeWeight(10);
       stroke(0, 100, 200, pointOpacity);
       point(i * STEP, j * STEP);
