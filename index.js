@@ -2,8 +2,6 @@ const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 const STEP = 10;
 
-const gridPoints = [];
-
 class Circle {
   constructor(x, y) {
     this.centre = [x, y];
@@ -52,7 +50,7 @@ function draw() {
       const pointOpacity =
         fieldPotential * 100 > 1 ? fieldPotential ** 2 * 10 ** 6 : 0;
       strokeWeight(10);
-      stroke(Math.random(), 100, 200, pointOpacity);
+      stroke(0, 100, 200, pointOpacity);
       point(i * STEP, j * STEP);
     }
   }
