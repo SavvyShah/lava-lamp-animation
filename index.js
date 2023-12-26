@@ -1,6 +1,7 @@
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-const STEP = 10;
+const STEP = 7;
+const SCALE = WIDTH > 1000 ? WIDTH / 1000 : 1;
 
 class Circle {
   constructor(x, y, v, s = 4) {
@@ -51,15 +52,23 @@ function totalPotential(x, y, circles) {
   );
 }
 
-const circles = [
-  new Circle(300, 300, [Math.random() * 2, Math.random() * 2], 3),
-  new Circle(300, 300, [Math.random() * 2, Math.random() * 2], 5),
-  new Circle(300, 300, [Math.random() * 2, Math.random() * 2], 5),
-];
+function randomInRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+const circles = [null, null, null].map(
+  () =>
+    new Circle(
+      randomInRange(0, WIDTH),
+      randomInRange(0, HEIGHT),
+      [randomInRange(-SCALE, SCALE), randomInRange(-SCALE, SCALE)],
+      (SCALE < 2 ? 2 : SCALE) * randomInRange(3, 6)
+    )
+);
 
 // Add grid points from 0 to screen width and 0 to screen height
 function setup() {
-  createCanvas(WIDTH, HEIGHT);
+  createCanvas(WIDTH - 4, HEIGHT - 4);
 }
 
 function draw() {
@@ -75,8 +84,11 @@ function draw() {
 
       const pointOpacity = fieldPotential * 8;
       strokeWeight(10);
-      stroke(0, 100, 200, pointOpacity);
+      //  Give a blue neon color to the points
+      stroke(25, 125, 220, pointOpacity);
+      strokeWeight(7);
       point(i * STEP, j * STEP);
+      strokeWeight(10);
     }
   }
 }
