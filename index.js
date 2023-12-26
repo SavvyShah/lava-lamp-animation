@@ -1,6 +1,6 @@
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-const STEP = 7;
+const STEP = 10;
 const SCALE = WIDTH > 1000 ? WIDTH / 1000 : 1;
 
 class Circle {
@@ -85,9 +85,10 @@ function draw() {
       const pointOpacity = fieldPotential * 8;
       strokeWeight(10);
       //  Give a blue neon color to the points
-      stroke(25, 125, 220, pointOpacity);
-      strokeWeight(7);
-      point(i * STEP, j * STEP);
+      const gradient = 125 + j;
+      fill(225, gradient, 25, pointOpacity);
+      strokeWeight(0);
+      square(i * STEP, j * STEP, STEP);
       strokeWeight(10);
     }
   }
