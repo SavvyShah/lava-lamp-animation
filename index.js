@@ -1,35 +1,47 @@
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
-const STEP = 10;
+const PIXEL_SIZE = 10;
 const SCALE = WIDTH > 1000 ? WIDTH / 1000 : 1;
+const UNIT_SIZE = Math.max(WIDTH, HEIGHT) / 100;
+const THRESHOLD = 0.5;
+
+const ROWS = Math.floor(HEIGHT / PIXEL_SIZE) + 1;
+const COLS = Math.floor(WIDTH / PIXEL_SIZE) + 1;
+
+/**
+ * The base unit of charge
+ * which depends on the screen size and pixel size and controls the power of force
+ * */
+const UNIT_CHARGE = PIXEL_SIZE * UNIT_SIZE;
 
 class Circle {
   constructor(x, y, v, s = 4) {
     this.centre = [x, y];
     this.velocity = v;
-    this.size = s;
+    this.q = s;
   }
 
   // Outputs field values in range of [0, MAX_VALUE]
   // MAX_VALUE is as defined inside function.
-  // You can then easily cutoff values less than 0.01. i.e. THRESHOLD = 0.01
   fieldPotential(x, y) {
-    // Number of pixels in a unit
-    const UNIT = (this.size * Math.max(WIDTH, HEIGHT)) / 20;
-    // MAX field value when on the charge itself. i.e. the center
-    const MAX_VALUE = 10 ** 5;
+    // Simulate infinity. MAX field value when on the charge itself. i.e. the center
+    const MAX_VALUE = 100000;
 
-    const rSquare =
-      ((this.centre[0] - x) ** 2 + (this.centre[1] - y) ** 2) / UNIT ** 2;
-    return rSquare > 0 ? 1 / rSquare ** 2 : MAX_VALUE;
+    // r: distance from the center
+    const r = Math.sqrt((this.centre[0] - x) ** 2 + (this.centre[1] - y) ** 2);
+
+    // If r is 0, then return MAX_VALUE
+    return r > 0 ? (this.q * UNIT_CHARGE) / r : MAX_VALUE;
   }
   move() {
+    // If we hit the left or right of the screen
     if (this.centre[0] < 0 || this.centre[0] >= WIDTH) {
       // Horizontal velocity becomes opposite
       this.velocity[0] = -this.velocity[0];
     }
     this.centre[0] = this.centre[0] - this.velocity[0];
 
+    // If we hit the top or bottom of the screen
     if (this.centre[1] < 0 || this.centre[1] >= HEIGHT) {
       // Vertical velocity becomes opposite
       this.velocity[1] = -this.velocity[1];
@@ -62,7 +74,7 @@ const circles = [null, null, null].map(
       randomInRange(0, WIDTH),
       randomInRange(0, HEIGHT),
       [randomInRange(-SCALE, SCALE), randomInRange(-SCALE, SCALE)],
-      (SCALE < 2 ? 2 : SCALE) * randomInRange(3, 6)
+      randomInRange(UNIT_SIZE + PIXEL_SIZE * 20, UNIT_SIZE + PIXEL_SIZE * 30)
     )
 );
 
@@ -75,20 +87,24 @@ function draw() {
   clear();
   circles.forEach((circle) => circle.move());
 
-  const rows = Math.floor(WIDTH / STEP) + 1;
-  const cols = Math.floor(HEIGHT / STEP) + 1;
+  for (let i = 0; i < COLS; i++) {
+    for (let j = 0; j < ROWS; j++) {
+      const fieldPotential = totalPotential(
+        i * PIXEL_SIZE,
+        j * PIXEL_SIZE,
+        circles
+      );
 
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      const fieldPotential = totalPotential(i * STEP, j * STEP, circles);
-
-      const pointOpacity = fieldPotential * 8;
+      let pointOpacity = fieldPotential;
       strokeWeight(10);
-      //  Give a blue neon color to the points
-      const gradient = 125 + j;
+      //  We only want to get gradient by changing green from [100, 200]
+      const gradient = 100 + j * (100 / ROWS);
+      if (pointOpacity < THRESHOLD) {
+        pointOpacity = 0;
+      }
       fill(225, gradient, 25, pointOpacity);
       strokeWeight(0);
-      square(i * STEP, j * STEP, STEP);
+      square(i * PIXEL_SIZE, j * PIXEL_SIZE, PIXEL_SIZE);
       strokeWeight(10);
     }
   }
